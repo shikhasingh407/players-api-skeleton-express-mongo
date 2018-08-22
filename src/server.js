@@ -7,7 +7,9 @@ const routes = require('./routes');
 
 // Setup db
 mongoose.Promise = global.Promise;
-mongoose.connect(config.mongoUri);
+console.log("connection url: " + config.mongoUri);
+const mongoUri = "mongodb://127.0.0.1:27017/players-api";
+mongoose.connect(mongoUri);//config.mongoUri);
 mongoose.connection.on('error', console.error.bind(console, 'mongo connection error:'));
 
 const app = express();
@@ -21,10 +23,13 @@ app.use((req, res, next) => {
   next(err);
 });
 
-// error handler
+//error handler
 app.use((err, req, res, next) => {
   res.status(err.status || 409);
   res.send(err.message);
 });
+
+var port = process.env.PORT || 3000;
+app.listen(port);
 
 module.exports = app;

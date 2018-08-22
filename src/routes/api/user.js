@@ -1,5 +1,5 @@
 const Boom = require('boom');
-const { jwtsecret } = require('config');
+const jwtsecret = "jwtsecrethere";
 const jwt = require('jsonwebtoken');
 const { Router } = require('express');
 const { User } = require('../../models');
@@ -20,6 +20,7 @@ router.post('/', (req, res, next) => {
       });
     }).catch(next);
 });
+
 
 const getToken = user => jwt.sign({ userId: user._id }, jwtsecret);
 
