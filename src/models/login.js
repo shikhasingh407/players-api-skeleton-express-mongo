@@ -37,3 +37,6 @@ function findUserByCredentials (credentials){
 }
 
 module.exports = LoginModel;
+
+
+

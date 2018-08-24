@@ -21,6 +21,6 @@ PlayersSchema.methods.toJSON = function() {
   return obj;
 };
 
-const User = mongoose.model('Player', PlayersSchema);
-module.exports = User;
+const PlayerModel = mongoose.model('Player', PlayersSchema);
+module.exports = Player;
 
