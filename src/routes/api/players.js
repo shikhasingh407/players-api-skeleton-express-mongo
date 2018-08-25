@@ -7,9 +7,7 @@ const { Player } = require('../../models');
 const router = new Router();
 
 router.post('/', (req, res, next) => {
-  //const { password, confirm_password } = req.body;
-  //if (!password || !confirm_password || password !== confirm_password) throw Boom.conflict('Passwords do not match');
-  console.log("player: " + JSON.stringify(req.body));
+  //console.log("player: " + JSON.stringify(req.body));
   if(!req.headers.authorization || req.headers.authorization == ""){
     const err = new Error('Missing Token');
     err.status = 403;
@@ -18,23 +16,29 @@ router.post('/', (req, res, next) => {
     res.status(403).send();
   }
   else {
-    const player = new Player(req.body);
-    player
-      .save()
-      .then(() => {
-        res.status(201).send({
-          success: true,
-          //token: getToken(player),
-          player
-        });
-      }).catch(next);
+    Player.findOne({first_name: req.body.first_name}, function (err, player){
+      //console.log("player at find player by name: " + player);
+      if(player != null){
+        res.status(409).send();
+      }
+      else{
+        const player = new Player(req.body);
+        player
+          .save()
+          .then(() => {
+            res.status(201).send({
+              success: true,
+              //token: getToken(player),
+              player
+            });
+          }).catch(next);
+      }
+    });
   }
 });
 
 
 router.get('/', (req, res, next) => {
-  //const { password, confirm_password } = req.body;
-  //if (!password || !confirm_password || password !== confirm_password) throw Boom.conflict('Passwords do not match');
   console.log("player: " + JSON.stringify(req.body));
   if(!req.headers.authorization || req.headers.authorization == ""){
     const err = new Error('Missing Token');
@@ -44,35 +48,27 @@ router.get('/', (req, res, next) => {
     res.status(403).send();
   }
   else {
-    //const player = new Player();
+        Player
+          .find(function (err, players){ //THIS IS WHAT'S FAILING
+              res.status(200).send({
+                success: true,
+                //token: getToken("sampleId"),
+                players
+              });
 
-    // var mongoose = require('mongoose');
-    // const PlayersSchema = new mongoose.Schema(
-    //   {
-    //     first_name: { type: String, required: true },
-    //     last_name: { type: String, required: true },
-    //     rating: { type: Number, required: true },
-    //     handedness: { type: String, required: true }
-    //   }
-    //   ,
-    //   {
-    //     versionKey: false
-    //   }
-    // );
-    //
-    // const player = mongoose.model('Player1', PlayersSchema);
-    //
-    // player
-    //   .find(function (err, docs){ //THIS IS WHAT'S FAILING
-    //       res.status(200).send({
-    //         success: true,
-    //         token: getToken("sampleId"),
-    //         docs
-    //       });
-    //
-    //   });
+          });
+    //const player = new Player();
   }
 });
+
+
+function findPlayerByName(playerName) {
+  console.log(playerName);
+  Player.findOne({first_name: playerName}, function (err, player){
+    console.log("player at find player by name: " + player);
+    return player;
+  });
+}
 
 
 const getToken = player => jwt.sign({ userId: player._id }, jwtsecret);
