@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose');
 
 const PlayersSchema = new mongoose.Schema(
@@ -6,9 +5,9 @@ const PlayersSchema = new mongoose.Schema(
     first_name: { type: String, required: true },
     last_name: { type: String, required: true },
     rating: { type: Number, required: true },
-    handedness: { type: 'left|right', required: true },
-    id: { type: String}
-  },
+    handedness: { type: String, required: true }
+  }
+  ,
   {
     versionKey: false
   }
@@ -21,6 +20,5 @@ PlayersSchema.methods.toJSON = function() {
   return obj;
 };
 
-const PlayerModel = mongoose.model('Player', PlayersSchema);
+const Player = mongoose.model('Player', PlayersSchema);
 module.exports = Player;
-

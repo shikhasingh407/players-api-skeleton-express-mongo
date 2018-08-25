@@ -20,7 +20,7 @@ describe('Player API', () => {
 
   describe('POST /api/players', () => {
     beforeEach(async () => {
-      //await Player.remove({});
+      await Player.remove({});
     });
 
     it('should fail if token not provided', done => {
@@ -84,7 +84,7 @@ describe('Player API', () => {
 
   describe('GET /api/players', () => {
     beforeEach(async () => {
-      //await Player.remove({});
+      await Player.remove({});
     });
 
     it('should fail if token not provided', done => {
