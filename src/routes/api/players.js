@@ -6,6 +6,24 @@ const { Player } = require('../../models');
 
 const router = new Router();
 
+router.post('/:id', (req, res, next) => {
+  if(!req.headers.authorization || req.headers.authorization == ""){
+    const err = new Error('Missing Token');
+    err.status = 403;
+    res.status(err.status).send();
+  }
+  else {
+    if(req.headers.authorization != getToken(req.params.id)){
+      res.status(403).send();
+    }
+    else {
+      Player.findOne({_id: req.params.id}).remove(function (err, doc) {
+        res.status(200).send({success: true, doc});
+      });
+    }
+  }
+});
+
 router.post('/', (req, res, next) => {
   //console.log("player: " + JSON.stringify(req.body));
   if(!req.headers.authorization || req.headers.authorization == ""){
@@ -71,6 +89,6 @@ function findPlayerByName(playerName) {
 }
 
 
-const getToken = player => jwt.sign({ userId: player._id }, jwtsecret);
+const getToken = player => jwt.sign({ playerId: player._id }, jwtsecret);
 
 module.exports = router;
