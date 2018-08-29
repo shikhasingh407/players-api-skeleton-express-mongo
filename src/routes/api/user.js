@@ -27,23 +27,23 @@ router.put('/:userId', (req, res, next) => {
   //const user = new User(req.body);
   let userid = req.params.userId;
   let body = req.body;
+  const userObj = {
+    email: req.body.email,
+    first_name: req.body.first_name,
+    last_name: req.body.last_name,
+    password: req.body.password
+  }
   console.log("userid: " + userid + " body: " + JSON.stringify(body));
-
-  // user
-  //   .update({"_id": userid}, { $set: body }, function(err, num){
-  //       res.status(200).send(num);
-  //   }
-
-  User.findOne({_id: req.params.id}, function (err, doc) {
-    res.status(200).send({success: true, doc});
-    // if(doc)
-    //   res.status(200).send({success: true, doc});
-    // else
-    //   res.status(403).send();
-  });
+  User
+    .update({"_id": userid}, userObj, function(err, user){
+      if (err) {
+        res.status(404).send(err);
+      }
+      User.findOne({"_id": userid}, function (err, user){
+        res.status(200).send({ success: true, user});
+      });
+    });
 });
-
-
 const getToken = user => jwt.sign({ userId: user._id }, jwtsecret);
 
 module.exports = router;

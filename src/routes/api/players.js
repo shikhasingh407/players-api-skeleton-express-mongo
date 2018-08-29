@@ -6,28 +6,40 @@ const { Player } = require('../../models');
 
 const router = new Router();
 
-router.post('/:id', (req, res, next) => {
+router.delete('/:id', (req, res, next) => { //this is player id not user id
+                                            //console.log("delete player called here");
   if(!req.headers.authorization || req.headers.authorization == ""){
-    //const err = new Error('Missing Token');
-    //err.status = 403;
     res.status(403).send();
   }
+  // console.log(req.body.created_by + "    *****  " + req.headers.authorization);
+  // if(req.body.created_by != req.headers.authorization){
+  //   console.log("caught");
+  //   res.status(404).send();
+  // }
   else {
-    if(req.headers.authorization != getToken(req.params.id)){
-      res.status(403).send();
-    }
-    else {
-      Player.findOne({_id: req.params.id}).remove(function (err, doc) {
-        if(doc)
-          res.status(200).send({success: true, doc});
-        else
-          res.status(403).send();
-      });
-    }
+    // let playerToken = "Bearer " + getToken(req.params.id);
+    // console.log("pleayer token: " + playerToken);
+    // console.log("auth token: " + req.headers.authorization);
+    // if(playerToken != req.headers.authorization){
+    //   res.status(404).send();
+    // }
+    // else{
+    Player.findOne({_id: req.params.id}).remove(function (err, doc) {
+      if(doc){
+        console.log("here");
+        res.status(200).send({success: true, doc});
+      }
+      else{
+        //console.log("here");
+        res.status(404).send();
+      }
+    });
+    // }
   }
 });
 
 router.post('/', (req, res, next) => {
+  console.log("create player called by test cases");
   //console.log("player: " + JSON.stringify(req.body));
   if(!req.headers.authorization || req.headers.authorization == ""){
     const err = new Error('Missing Token');
@@ -43,6 +55,7 @@ router.post('/', (req, res, next) => {
         res.status(409).send();
       }
       else{
+        req.body.created_by = req.headers.authorization;
         const player = new Player(req.body);
         player
           .save()
@@ -58,9 +71,8 @@ router.post('/', (req, res, next) => {
   }
 });
 
-
 router.get('/', (req, res, next) => {
-  //console.log("player: " + JSON.stringify(req.body));
+  console.log("get players: " + JSON.stringify(req.body));
   if(!req.headers.authorization || req.headers.authorization == ""){
     const err = new Error('Missing Token');
     err.status = 403;
@@ -69,19 +81,18 @@ router.get('/', (req, res, next) => {
     res.status(403).send();
   }
   else {
-        Player
-          .find(function (err, players){ //THIS IS WHAT'S FAILING
-              res.status(200).send({
-                success: true,
-                //token: getToken("sampleId"),
-                players
-              });
+    Player
+      .find(function (err, players){ //THIS IS WHAT'S FAILING
+        res.status(200).send({
+          success: true,
+          //token: getToken("sampleId"),
+          players
+        });
 
-          });
+      });
     //const player = new Player();
   }
 });
-
 
 function findPlayerByName(playerName) {
   console.log(playerName);
@@ -90,7 +101,6 @@ function findPlayerByName(playerName) {
     return player;
   });
 }
-
 
 const getToken = player => jwt.sign({ playerId: player._id }, jwtsecret);
 
