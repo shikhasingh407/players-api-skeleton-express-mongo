@@ -8,9 +8,9 @@ const router = new Router();
 
 router.post('/:id', (req, res, next) => {
   if(!req.headers.authorization || req.headers.authorization == ""){
-    const err = new Error('Missing Token');
-    err.status = 403;
-    res.status(err.status).send();
+    //const err = new Error('Missing Token');
+    //err.status = 403;
+    res.status(403).send();
   }
   else {
     if(req.headers.authorization != getToken(req.params.id)){
@@ -18,7 +18,10 @@ router.post('/:id', (req, res, next) => {
     }
     else {
       Player.findOne({_id: req.params.id}).remove(function (err, doc) {
-        res.status(200).send({success: true, doc});
+        if(doc)
+          res.status(200).send({success: true, doc});
+        else
+          res.status(403).send();
       });
     }
   }
@@ -57,7 +60,7 @@ router.post('/', (req, res, next) => {
 
 
 router.get('/', (req, res, next) => {
-  console.log("player: " + JSON.stringify(req.body));
+  //console.log("player: " + JSON.stringify(req.body));
   if(!req.headers.authorization || req.headers.authorization == ""){
     const err = new Error('Missing Token');
     err.status = 403;
