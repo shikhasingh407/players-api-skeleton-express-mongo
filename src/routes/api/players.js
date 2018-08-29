@@ -36,7 +36,7 @@ router.post('/', (req, res, next) => {
   else {
     Player.findOne({first_name: req.body.first_name}, function (err, player){
       //console.log("player at find player by name: " + player);
-      if(player != null){
+      if(player !== null){
         res.status(409).send();
       }
       else{
