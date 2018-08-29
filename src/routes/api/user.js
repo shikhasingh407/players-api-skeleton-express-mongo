@@ -22,9 +22,6 @@ router.post('/', (req, res, next) => {
 });
 
 router.put('/:userId', (req, res, next) => {
-  // const { password, confirm_password } = req.body;
-  // if (!password || !confirm_password || password !== confirm_password) throw Boom.conflict('Passwords do not match');
-  //const user = new User(req.body);
   let userid = req.params.userId;
   let body = req.body;
   const userObj = {

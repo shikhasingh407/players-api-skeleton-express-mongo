@@ -14,7 +14,6 @@ router.post('/', (req, res, next) => {
   if (!password || !email) throw Boom.conflict('Required missing');
 
   User.findOne(userObj, function (err, user){
-    //console.log("player at find player by name: " + player);
     if(user != null){
       res.status(200).send({
         success: true,

@@ -160,7 +160,7 @@ describe('Player API', () => {
       expect(res.body).to.be.a('object');
       expect(res.body.success).to.be.true;
       expect(res.body.players).to.be.a('array');
-      expect(res.body.players.length).to.equal(1);
+      expect(res.body.players.length).to.equal(2);
 
       res.body.players.forEach(player => expect(player.id).to.be.a('string'));
     });
